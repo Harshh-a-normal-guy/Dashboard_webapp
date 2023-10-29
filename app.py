@@ -3,7 +3,7 @@ import streamlit as st
 import process
 import matplotlib.pyplot as plt
 import seaborn as sns
-import plotly as px
+import plotly.express as px
 
 st.set_page_config(page_title='Sales Dashboard',page_icon=':bar_chart:'
                    ,layout='wide')
@@ -93,8 +93,8 @@ with st.sidebar:
 df= process.load_Data(path)
 
 
-user_menu= st.sidebar.radio('Select an option',['Basic','Gender-Wise-Analysis','Branch_wise'])
-if user_menu=="Basic":
+user_menu= st.sidebar.radio('Select an option',['Overview','Gender-Wise-Analysis','Branch_wise'])
+if user_menu=="Overview":
 
     with st.expander("Sales Table Expand"):
         st.dataframe(df)
@@ -107,6 +107,20 @@ if user_menu=="Basic":
         st.text("we can see that More than half the Data Belongs in the region 0-400 $")
         st.text(" To lure them more we can provide discount in that Region.")
         st.pyplot(sns.displot(data=df,x='Total'))
+    piechart = df.groupby("Branch").agg({'Total':'sum'})
+    plt.pie(piechart['Total'], labels=['A', 'B', 'C'], autopct='%1.3f%%')
+    plt.legend()
+
+# Display the pie chart in a Streamlit expander
+    with st.expander("Revenue by Branch"):
+        st.text("The Distribution of Revenue is nearly Same")
+        st.pyplot(plt.gcf())
+    pie2= df.groupby('Branch').agg({'gross income':'sum'})
+    with st.expander("Gross income in Branch"):
+        plt.pie(pie2['gross income'],labels=['A', 'B', 'C'], autopct='%1.3f%%')
+        # plt.legend()
+        plt.legend()
+        st.pyplot(plt.gcf())
 
 if user_menu=="Gender-Wise-Analysis":
 
